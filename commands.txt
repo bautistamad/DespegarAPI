@@ -1,0 +1,21 @@
+Part #1
+docker build --tag python-django
+docker run --publish 8000:8000 python-django
+
+Part #2
+docker-compose build
+docker-compose run --rm app django-admin startproject core .
+docker compose up
+docker exec -it django_app /bin/bash
+
+Part #3
+docker-compose build
+docker-compose run --rm app django-admin startproject core .
+docker compose up
+
+
+My research
+In order to access a certain docker container's CLI docker
+docker container exec -it vim <docker name> <command>
+ex: 
+    docker container exec -it django_container ls
