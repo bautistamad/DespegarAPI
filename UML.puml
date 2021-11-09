@@ -1,0 +1,94 @@
+@startuml UML Despegar
+package Despegar{
+    class User{
+        - id: int
+        - name: String
+        - password: String
+        - email: String
+    }
+
+    class Purchase{
+        id: int
+        user: User
+    }
+
+    class Package{
+        id: int
+        hotel: Hotel
+        vehicle: Vehicle
+        flight: Flight
+        price: float
+    }
+
+    class Flight{
+        id: int
+        code_number: int
+        from: Airport
+        to: Airport
+        hours: int
+        date: Date
+        turn: boolean
+        dateBack: Date
+        price: float
+    }
+
+    class Vehicle{
+        id: int
+        patent: int
+        brand: String
+        price: float
+    }
+
+    class Hotel{
+        id: int
+        name: String
+        star: int
+        address: String
+        price: float
+    }
+
+    class HotelSales{
+        id: int
+        hotel: Hotel
+        price: float
+    }
+
+    class FlightSales{
+        id: int
+        flight: Flight
+        price: float
+    }
+
+    class Airport{
+        id: int
+        name: String
+        province: Province
+    }
+
+    class Country{
+        id: int
+        name: String
+    }
+
+    class Province{
+        id: int
+        name: String
+        country: Country
+    }
+
+    User "1" -right-> "1-n" Purchase
+    Purchase "1-n" -right-> "1" Package
+    Package --> Flight
+    Package --> Vehicle
+    Package --> Hotel
+    Flight --> FlightSales
+    Flight --> Airport
+    Hotel --> HotelSales
+    Airport "1" --> "1" Province
+    Province "1-n" -right-> "1" Country 
+
+
+}
+
+
+@enduml
