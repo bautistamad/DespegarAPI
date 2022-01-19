@@ -8,4 +8,5 @@ admin.site.register(Airport)
 admin.site.register(Hotel)
 admin.site.register(Vehicle)
 admin.site.register(Flight)
+admin.site.register(Package)
 

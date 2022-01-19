@@ -20,6 +20,10 @@ package Despegar{
         price: float
     }
 
+    abstract class Product{
+        status: Int
+    }
+
     class Flight{
         id: int
         flight_type: String
@@ -74,6 +78,10 @@ package Despegar{
     Flight --> Airport
     Airport "1" -right-> "1" Province
     Province "1-n" -right-> "1" Country 
+
+    Flight -up-|> Product
+    Vehicle -up-|> Product
+    Hotel -up-|> Product
 
 
 }
