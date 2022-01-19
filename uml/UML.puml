@@ -22,6 +22,7 @@ package Despegar{
 
     class Flight{
         id: int
+        flight_type: String
         code_number: int
         from: Airport
         to: Airport
@@ -42,20 +43,9 @@ package Despegar{
     class Hotel{
         id: int
         name: String
+        hotel_type: String
         star: int
         address: String
-        price: float
-    }
-
-    class HotelSales{
-        id: int
-        hotel: Hotel
-        price: float
-    }
-
-    class FlightSales{
-        id: int
-        flight: Flight
         price: float
     }
 
@@ -81,10 +71,8 @@ package Despegar{
     Package --> Flight
     Package --> Vehicle
     Package --> Hotel
-    Flight --> FlightSales
     Flight --> Airport
-    Hotel --> HotelSales
-    Airport "1" --> "1" Province
+    Airport "1" -right-> "1" Province
     Province "1-n" -right-> "1" Country 
 
 
