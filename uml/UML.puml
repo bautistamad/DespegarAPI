@@ -2,7 +2,8 @@
 package Despegar{
     class User{
         - id: int
-        - name: String
+        - first_name: String
+        - last_name: String
         - password: String
         - email: String
     }

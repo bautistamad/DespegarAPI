@@ -9,4 +9,4 @@ admin.site.register(Hotel)
 admin.site.register(Vehicle)
 admin.site.register(Flight)
 admin.site.register(Package)
-
+admin.site.register(Purchase)

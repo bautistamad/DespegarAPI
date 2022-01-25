@@ -1,4 +1,5 @@
 from django.db import models
+from login import models as LoginModel
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import related
@@ -160,3 +161,13 @@ class Package(Product):
     class Meta:
         verbose_name = 'Package'
         verbose_name_plural = 'Packages'
+
+class Purchase(models.Model):
+    
+    user  = models.ForeignKey(LoginModel.User,
+                                 on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Purchase'
+        verbose_name_plural = 'Purchases'
