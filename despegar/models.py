@@ -4,8 +4,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import related
 
-# Create your models here.
-
 class Product(models.Model):
     STATUS = ((0, 'Available'),
              (1, 'Not Available'),

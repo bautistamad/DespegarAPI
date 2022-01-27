@@ -4,66 +4,166 @@ from .models import *
 from .serializers import *
 from .permissions import *
 from rest_framework import viewsets, status, permissions
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
-from login.models import User
-import jwt
+from django.shortcuts import get_object_or_404
 
-# Create your views here.
-
-
-class VehiclesViewSet(viewsets.ModelViewSet, DefaultPermissions):
+class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
-    permissions_classes = [DefaultPermissions]
+    permission_classes = [ProductPermissions]
 
     def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los vehiculos,
+        sino devuelve solo los disponibles
+        """
         user = self.request.user
         if user.is_superuser:
             return Vehicle.objects.all()
-        return Vehicle.objects.filter(status=1)
+        return Vehicle.objects.filter(status=0)
 
-    def create(self, request, *args, **kwargs):
-        user = get_user(request)
-        if user.is_authenticated and user.is_superuser:
-
-            patent = request.data['patent']
-            brand = request.data['brand']
-            priceperday = request.data['priceperday']
-
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos vehiculos
+        * Agarra los parametros y crea el vehiculo
+        """
+        patent = request.data['patent']
+        brand = request.data['brand']
+        priceperday = request.data['priceperday']
+        try:
             created = Vehicle.objects.create(
-                patent=patent, brand=brand, priceperday=priceperday)
+                patent=patent, 
+                brand=brand, 
+                priceperday=priceperday)
             created.save()
+
             return Response("New vehicle created", status=status.HTTP_201_CREATED)
-        return Response("Cant create a new vehicle", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Can't create vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, *args, **kwargs):
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-
-        user = get_user(request)
-        if user.is_authenticated and user.is_superuser:
-            instance = self.get_object()
-            self.perform_destroy(instance)
-        #Vehicle.objects.delete(id = request.data['id'])
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar vehiculos
+        * Utiliza el id, busca y borra el vehiculo
+        """
+        try:
+            vehicle_id = request.data["id"]
+            vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+            vehicle.delete()
             return Response("Vehicle removed", status=status.HTTP_204_NO_CONTENT)
-        return Response("You dont have permission to delete a car", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Can't remove vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
-
-class HotelsViewSet(viewsets.ModelViewSet):
+class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
+    permission_classes = [ProductPermissions]
 
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los hoteles,
+        sino devuelve solo los disponbles 
+        """
+        user = self.request.user
+        if user.is_superuser:
+            return Hotel.objects.all()
+        return Hotel.objects.filter(status=0)
 
-def get_user(request):
-    token = request.COOKIES.get('jwt')
-    print(token)
-    if not token:
-        raise (AuthenticationFailed('Unauthenticated!'))
-    try:
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Unauthenticated!')
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos hoteles
+        * Agarra los parametros y crea el hotel
+        """
+        name = request.data['name']
+        hotel_type = request.data['hotel_type']
+        stars = request.data['stars']
+        address = request.data['address']
+        priceperday = request.data['priceperday']
 
-    user = User.objects.filter(id=payload['id']).first()
-    return (user)
+        try:
+            created = Hotel.objects.create(
+                name = name,
+                hotel_type = hotel_type,
+                stars = stars,
+                address = address,
+                priceperday = priceperday
+            )
+            created.save()
+
+            return Response("New hotel created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar hoteles
+        * Utiliza el id, busca y borra el hotel
+        """
+        try:
+            hotel_id = request.data["id"]
+            hotel = get_object_or_404(Hotel, id=hotel_id)
+            hotel.delete()
+            return Response("Hotel removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Flight.objects.all()
+    serializer_class = FlightSerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los vuelos,
+        sino devuelve solo los disponbles 
+        """
+        user = self.request.user
+        if user.is_superuser:
+            return Flight.objects.all()
+        return Flight.objects.filter(status=0)
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos vuelos
+        * Agarra los parametros y crea el vuelo
+        """
+
+        code_number = request.data["code_number"]
+        flight_type = request.data["flight_type"]
+        airport_from = request.data["airport_from"]
+        airport_to = request.data["airport_to"]
+        hours = request.data["hours"]
+        date = request.data["date"]
+        turn = request.data["turn"]
+        price = request.data["price"]
+
+        try:
+            created = Hotel.objects.create(
+                code_number = code_number,
+                flight_type = flight_type,
+                airport_from = airport_from,
+                airport_to = airport_to,
+                hours = hours,
+                date = date,
+                turn = turn,
+                price = price
+            )
+            created.save()
+
+            return Response("New flight created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar vuelos
+        * Utiliza el id, busca y borra el vuelo
+        """
+        try:
+            flight_id = request.data["id"]
+            flight = get_object_or_404(Flight, id=flight_id)
+            flight.delete()
+            return Response("Flight removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)

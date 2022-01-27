@@ -8,6 +8,7 @@ app_name = "despegar"
 router = DefaultRouter()
 router.register("vehicles", VehiclesViewSet, basename="vehicles")
 router.register("hotels", HotelsViewSet, basename="hotels")
+router.register("flights", FlightsViewSet, basename="flights")
 
 urlpatterns = router.urls
 
