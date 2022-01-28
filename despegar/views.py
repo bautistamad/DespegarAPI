@@ -167,3 +167,146 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Flight removed", status=status.HTTP_204_NO_CONTENT)
         except:
             return Response("Can't remove flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Airport.objects.all()
+    serializer_class = AirportSerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los aeropuertos,
+        sino devuelve solo los disponbles 
+        """
+        return Airport.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos aeropuertos
+        * Agarra los parametros y crea el aeropuerto
+        """
+        name = request.data["name"]
+        province = request.data["province"]
+
+        try:
+            created = Airport.objects.create(
+                name = name,
+                province = province
+            )
+            created.save()
+
+            return Response("New airport created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar aeropuestos
+        * Utiliza el id, busca y borra el aeropuesto
+        """
+        try:
+            airport_id = request.data["id"]
+            airport = get_object_or_404(Airport, id=airport_id)
+            airport.delete()
+            return Response("Airport removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los paises,
+        sino devuelve solo los disponbles 
+        """
+        user = self.request.user
+        if user.is_superuser:
+            return Province.objects.all()
+        # return Province.objects.filter(country=self.request.data["country"])
+
+        country_name = self.request.query_params.get('country') 
+        if country_name:
+            # country = Country.objects.filter(name=country_name).first()
+            # return Province.objects.filter(country=country)
+            return Province.objects.filter(country__name=country_name)
+
+        else:
+            return Province.objects.all()
+
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos paises
+        * Agarra los parametros y crea el pais
+        """
+        name = request.data["name"]
+        country = request.data["country"]
+
+        try:
+            created = Province.objects.create(
+                name = name,
+                country = country
+            )
+            created.save()
+
+            return Response("New province created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar paises
+        * Utiliza el id, busca y borra el pais
+        """
+        try:
+            province_id = request.data["id"]
+            province = get_object_or_404(Province, id=province_id)
+            province.delete()
+            return Response("Province removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los paises,
+        sino devuelve solo los disponbles 
+        """
+        return Country.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos paises
+        * Agarra los parametros y crea el pais
+        """
+        name = request.data["name"]
+
+        try:
+            created = Country.objects.create(
+                name = name,
+            )
+            created.save()
+
+            return Response("New country created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar paises
+        * Utiliza el id, busca y borra el pais
+        """
+        try:
+            country_id = request.data["id"]
+            country = get_object_or_404(Country, id=country_id)
+            country.delete()
+            return Response("Country removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)

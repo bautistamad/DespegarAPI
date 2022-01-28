@@ -16,14 +16,26 @@ class HotelSerializer(serializers.ModelSerializer):
         model = Hotel
         fields = '__all__'
 
-class AirportSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Airport
-        fields = '__all__'
-
 class FlightSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Flight
+        fields = '__all__'
+
+class CountrySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Country
+        fields = '__all__'
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Province
+        fields = '__all__'
+
+class AirportSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Airport
         fields = '__all__'

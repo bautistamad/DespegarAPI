@@ -161,7 +161,6 @@ class Package(Product):
         verbose_name_plural = 'Packages'
 
 class Purchase(models.Model):
-    
     user  = models.ForeignKey(LoginModel.User,
                                  on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
