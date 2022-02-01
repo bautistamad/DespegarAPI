@@ -7,6 +7,18 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
+def get_user(request):
+    token = request.COOKIES.get('jwt')
+    if not token:
+        raise (AuthenticationFailed('Unauthenticated!'))
+    try:
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
+
+    user = User.objects.filter(id=payload['id']).first()
+    return (user)
+
 class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
     queryset = Vehicle.objects.all()
@@ -18,7 +30,7 @@ class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los vehiculos,
         sino devuelve solo los disponibles
         """
-        user = self.request.user
+        user = get_user(self.request)
         if user.is_superuser:
             return Vehicle.objects.all()
         return Vehicle.objects.filter(status=0)
@@ -65,7 +77,7 @@ class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los hoteles,
         sino devuelve solo los disponbles 
         """
-        user = self.request.user
+        user = get_user(self.request)
         if user.is_superuser:
             return Hotel.objects.all()
         return Hotel.objects.filter(status=0)
@@ -118,7 +130,7 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los vuelos,
         sino devuelve solo los disponbles 
         """
-        user = self.request.user
+        user = get_user(self.request)
         if user.is_superuser:
             return Flight.objects.all()
         return Flight.objects.filter(status=0)
@@ -219,20 +231,12 @@ class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
 
     def get_queryset(self):
         """
-        Si es superusuario devuelve todos los paises,
-        sino devuelve solo los disponbles 
+        Si le paso un argumento de pais devuelve las provincias de dicho pais
+        , sino devuelve todas las provincias
         """
-        user = self.request.user
-        if user.is_superuser:
-            return Province.objects.all()
-        # return Province.objects.filter(country=self.request.data["country"])
-
         country_name = self.request.query_params.get('country') 
         if country_name:
-            # country = Country.objects.filter(name=country_name).first()
-            # return Province.objects.filter(country=country)
             return Province.objects.filter(country__name=country_name)
-
         else:
             return Province.objects.all()
 
@@ -310,3 +314,118 @@ class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Country removed", status=status.HTTP_204_NO_CONTENT)
         except:
             return Response("Can't remove country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+# Package
+# Purchase
+class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Package.objects.all()
+    serializer_class = PackageSerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los paquetes,
+        sino devuelve solo los disponbles 
+        """
+        user = get_user(self.request)
+        if user.is_superuser:
+            return Package.objects.all()
+
+        country_name = self.request.query_params.get('country') 
+        if country_name:
+            return Package.objects.filter(flight__airport_to__province__country__name=country_name)
+
+        return Package.objects.filter(status=0)
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos paquetes
+        * Agarra los parametros y crea el paquete
+        """
+        hotel = request.data["hotel"]
+        vehicle = request.data["vehicle"]
+        flight = request.data["flight"]
+        price = request.data["price"]
+
+        try:
+            created = Package.objects.create(
+                hotel = hotel,
+                vehicle = vehicle,
+                flight = flight,
+                price = price
+            )
+            created.save()
+
+            return Response("New package created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar paquetes
+        * Utiliza el id, busca y borra el paquete
+        """
+        try:
+            package_id = request.data["id"]
+            package = get_object_or_404(Flight, id=package_id)
+            package.delete()
+            return Response("Package removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+
+class PurchaseViewSet(viewsets.ModelViewSet, ProductPermissions):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+    permission_classes = [ProductPermissions]
+
+    def get_queryset(self):
+        """
+        Si es superusuario devuelve todos los purchase,
+        sino devuelve solo los disponibles 
+        """
+        user = get_user(self.request)
+        # if user.is_superuser:
+        #     return Purchase.objects.all()
+        return Purchase.objects.filter(status=0,user=user)
+
+    def post(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede crear nuevos paquetes
+        * Agarra los parametros y crea el paquete
+        """
+        hotel = request.data["hotel"]
+        vehicle = request.data["vehicle"]
+        flight = request.data["flight"]
+        price = request.data["price"]
+
+        try:
+            created = Package.objects.create(
+                hotel = hotel,
+                vehicle = vehicle,
+                flight = flight,
+                price = price
+            )
+            created.save()
+
+            return Response("New package created", status=status.HTTP_201_CREATED)
+        except:
+            return Response("Can't create package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        El superusuario solo puede borrar paquetes
+        * Utiliza el id, busca y borra el paquete
+        """
+        try:
+            package_id = request.data["id"]
+            package = get_object_or_404(Flight, id=package_id)
+            package.delete()
+            return Response("Package removed", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("Can't remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+

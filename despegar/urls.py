@@ -12,6 +12,8 @@ router.register("flights", FlightsViewSet, basename="flights")
 router.register("airports", AirportViewSet, basename="airports")
 router.register("provinces", ProvinceViewSet, basename="provinces")
 router.register("countries", CountryViewSet, basename="countries")
+router.register("packages", PackageViewSet, basename="packages")
+router.register("purchases", PurchaseViewSet, basename="purchases")
 
 
 urlpatterns = router.urls
