@@ -9,7 +9,21 @@ from login.models import User
 class ProductPermissions(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        user_allowed_methods = ['GET']
+        user_allowed_methods = ['GET','PATCH']
+        superuser_allowed_methods = ['POST','GET','PUT','PATCH','DELETE']
+        user = get_user(request)
+        if user.is_superuser and request.method in superuser_allowed_methods:
+            return True
+        if not user.is_authenticated:
+            return False
+        if request.method in user_allowed_methods:
+            return True
+        raise PermissionDenied()
+
+class PackagePermissions(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        user_allowed_methods = ['GET','PATCH','POST']
         superuser_allowed_methods = ['POST','GET','PUT','PATCH','DELETE']
         user = get_user(request)
         if user.is_superuser and request.method in superuser_allowed_methods:

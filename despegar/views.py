@@ -6,6 +6,7 @@ from .permissions import *
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from login.models import User
 
 def get_user(request):
     token = request.COOKIES.get('jwt')
@@ -52,7 +53,7 @@ class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New vehicle created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -65,7 +66,7 @@ class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
             vehicle.delete()
             return Response("Vehicle removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Hotel.objects.all()
@@ -105,7 +106,7 @@ class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New hotel created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -118,7 +119,7 @@ class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
             hotel.delete()
             return Response("Hotel removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Flight.objects.all()
@@ -165,7 +166,7 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New flight created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -178,7 +179,7 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
             flight.delete()
             return Response("Flight removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Airport.objects.all()
@@ -209,7 +210,7 @@ class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New airport created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -222,7 +223,7 @@ class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
             airport.delete()
             return Response("Airport removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Province.objects.all()
@@ -258,7 +259,7 @@ class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New province created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -271,7 +272,7 @@ class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
             province.delete()
             return Response("Province removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Country.objects.all()
@@ -300,7 +301,7 @@ class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New country created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -313,10 +314,8 @@ class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
             country.delete()
             return Response("Country removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
-# Package
-# Purchase
 class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
@@ -358,7 +357,7 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
 
             return Response("New package created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -367,17 +366,16 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
         """
         try:
             package_id = request.data["id"]
-            package = get_object_or_404(Flight, id=package_id)
+            package = get_object_or_404(Package, id=package_id)
             package.delete()
             return Response("Package removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
-
-class PurchaseViewSet(viewsets.ModelViewSet, ProductPermissions):
+class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
-    permission_classes = [ProductPermissions]
+    permission_classes = [PackagePermissions]
 
     def get_queryset(self):
         """
@@ -389,43 +387,56 @@ class PurchaseViewSet(viewsets.ModelViewSet, ProductPermissions):
         #     return Purchase.objects.all()
         return Purchase.objects.filter(status=0,user=user)
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         """
-        El superusuario solo puede crear nuevos paquetes
+        El usuario solo puede crear nuevos purchases si no tiene ninguno en proceso
         * Agarra los parametros y crea el paquete
         """
-        hotel = request.data["hotel"]
-        vehicle = request.data["vehicle"]
-        flight = request.data["flight"]
-        price = request.data["price"]
+        package = request.data["package"]
+        package = Package.objects.filter(id=package).first()
+
+        user = get_user(request)
+
+        lastPurchase = Purchase.objects.filter(user=user,status=0).first()
+        if lastPurchase:
+            return Response("A purchase is already being processed", status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            created = Package.objects.create(
-                hotel = hotel,
-                vehicle = vehicle,
-                flight = flight,
-                price = price
+            created = Purchase.objects.create(
+                package = package,
+                user = user
             )
             created.save()
-
-            return Response("New package created", status=status.HTTP_201_CREATED)
+            return Response("New purchase created", status=status.HTTP_201_CREATED)
         except:
-            return Response("Can't create package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Can not create purchase, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, *args, **kwargs):
+        user = get_user(self.request)
+        modifiedStatus = request.data['status']
+        if modifiedStatus in Purchase.STATUS_NUMBER:
+            lastPurchase = Purchase.objects.filter(user=user,status=0).first()
+            if not lastPurchase:
+                return Response("There's no purchase to modify", status=status.HTTP_400_BAD_REQUEST)
+            lastPurchase.status = modifiedStatus
+            lastPurchase.save()
+            if modifiedStatus == 1:
+                return Response("Purchase has been closed", status=status.HTTP_206_PARTIAL_CONTENT)
+            else:
+                return Response("Purchase has been canceled", status=status.HTTP_206_PARTIAL_CONTENT)
+        else:
+            return Response("Status code doesn't exist", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         """
-        El superusuario solo puede borrar paquetes
-        * Utiliza el id, busca y borra el paquete
+        El superusuario solo puede borrar purchases
+        * Utiliza el id, busca y borra el purchase
         """
         try:
-            package_id = request.data["id"]
-            package = get_object_or_404(Flight, id=package_id)
-            package.delete()
-            return Response("Package removed", status=status.HTTP_204_NO_CONTENT)
+            purchase_id = request.data["id"]
+            purchase = get_object_or_404(Purchase, id=purchase_id)
+            purchase.delete()
+            return Response("Purchase removed", status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response("Can't remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
+            return Response("Can not remove purchase, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 

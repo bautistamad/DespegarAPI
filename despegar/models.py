@@ -4,6 +4,8 @@ from login import models as LoginModel
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import related
+from django.core.validators import MinValueValidator,MaxValueValidator
+
 
 class Product(models.Model):
     STATUS = ((0, 'Available'),
@@ -11,7 +13,8 @@ class Product(models.Model):
              (2, 'Blocked'),
              )
     status = models.IntegerField(default=0,
-                    choices=STATUS)
+                    choices=STATUS,
+                    validators=[MinValueValidator(0), MaxValueValidator(2)])
 
     @property
     def product_status(self):
@@ -84,7 +87,9 @@ class Hotel(Product):
                     default='Normal',
                     )
     stars = models.IntegerField(default=0,
-                    choices=STARS)
+                    choices=STARS,
+                    validators=[MinValueValidator(0), MaxValueValidator(5)]
+                    )
     address = models.CharField(max_length=50)
     priceperday = models.FloatField(verbose_name="Price per day",
                     default=0.00)
@@ -169,6 +174,8 @@ class Package(Product):
                     related_name="flight"
     )
     price = models.FloatField(default=0.00)
+    amount = models.IntegerField(default = 0,validators=[MinValueValidator(0), MaxValueValidator(99)])
+    
 
     def __str__(self):
         return (f"Package N {self.id}: {self.hotel} | {self.vehicle} | {self.flight.only_name()}")
@@ -178,12 +185,15 @@ class Package(Product):
         verbose_name_plural = 'Packages'
 
 class Purchase(models.Model):
-    STATUS = ((0, 'In process'),
+    STATUS_NUMBER = [0,1,2]
+    STATUS = (
+             (0, 'In process'),
              (1, 'Purchased'),
              (2, 'Canceled'),
              )
     status = models.IntegerField(default=0,
-                    choices=STATUS)
+                    choices=STATUS,
+                    validators=[MinValueValidator(0), MaxValueValidator(2)])
     user  = models.ForeignKey(LoginModel.User,
                                  on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
