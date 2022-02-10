@@ -6,19 +6,6 @@ from .permissions import *
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from login.models import User
-
-def get_user(request):
-    token = request.COOKIES.get('jwt')
-    if not token:
-        raise (AuthenticationFailed('Unauthenticated!'))
-    try:
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Unauthenticated!')
-
-    user = User.objects.filter(id=payload['id']).first()
-    return (user)
 
 class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
@@ -31,8 +18,7 @@ class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los vehiculos,
         sino devuelve solo los disponibles
         """
-        user = get_user(self.request)
-        if user.is_superuser:
+        if self.request.user.is_superuser:
             return Vehicle.objects.all()
         return Vehicle.objects.filter(status=0)
 
@@ -78,8 +64,7 @@ class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los hoteles,
         sino devuelve solo los disponbles 
         """
-        user = get_user(self.request)
-        if user.is_superuser:
+        if self.request.user.is_superuser:
             return Hotel.objects.all()
         return Hotel.objects.filter(status=0)
 
@@ -131,8 +116,8 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
         Si es superusuario devuelve todos los vuelos,
         sino devuelve solo los disponbles 
         """
-        user = get_user(self.request)
-        if user.is_superuser:
+        
+        if self.request.user.is_superuser:
             return Flight.objects.all()
         return Flight.objects.filter(status=0)
 
@@ -324,13 +309,14 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
     def get_queryset(self):
         """
         Si es superusuario devuelve todos los paquetes,
-        sino devuelve solo los disponbles 
+        sino devuelve solo los disponIbles 
         """
-        user = get_user(self.request)
-        if user.is_superuser:
+        if self.request.user.is_superuser:
             return Package.objects.all()
 
-        country_name = self.request.query_params.get('country') 
+        country_name = self.request.query_params.get('country')
+        print(country_name)
+        
         if country_name:
             return Package.objects.filter(flight__airport_to__province__country__name=country_name)
 
@@ -345,6 +331,7 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
         vehicle = request.data["vehicle"]
         flight = request.data["flight"]
         price = request.data["price"]
+        amount = request.data["amount"]
 
         try:
             created = Package.objects.create(
@@ -382,10 +369,9 @@ class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
         Si es superusuario devuelve todos los purchase,
         sino devuelve solo los disponibles 
         """
-        user = get_user(self.request)
-        # if user.is_superuser:
-        #     return Purchase.objects.all()
+        user = self.request.user
         return Purchase.objects.filter(status=0,user=user)
+        
 
     def create(self, request, *args, **kwargs):
         """
@@ -395,7 +381,7 @@ class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
         package = request.data["package"]
         package = Package.objects.filter(id=package).first()
 
-        user = get_user(request)
+        user = self.request.user
 
         lastPurchase = Purchase.objects.filter(user=user,status=0).first()
         if lastPurchase:
@@ -412,7 +398,7 @@ class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
             return Response("Can not create purchase, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, *args, **kwargs):
-        user = get_user(self.request)
+        user = self.request.user
         modifiedStatus = request.data['status']
         if modifiedStatus in Purchase.STATUS_NUMBER:
             lastPurchase = Purchase.objects.filter(user=user,status=0).first()

@@ -1,10 +1,10 @@
 from telnetlib import STATUS
 from django.db import models
-from login import models as LoginModel
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import related
 from django.core.validators import MinValueValidator,MaxValueValidator
+from django.contrib.auth.models import User
 
 
 class Product(models.Model):
@@ -146,14 +146,14 @@ class Flight(Product):
     price = models.FloatField(default=0.00)
 
     def __str__(self):
-        return (f"Flight N: {self.code_number} - From: {self.airport_from.only_name()} - To: {self.airport_to.only_name()}")
+        return (f"Flight N: {self.code_number}")
 
     @property
     def name(self):
         return (f"Flight N: {self.code_number} - From: {self.airport_from.only_name()} - To: {self.airport_to.only_name()}")
 
     def only_name(self):
-        return (f"Flight {self.code_number} - From: {self.airport_from.only_name()} - To: {self.airport_to.only_name()}")
+        return (f"Flight {self.code_number}")
     
 
     class Meta:
@@ -163,22 +163,25 @@ class Flight(Product):
 class Package(Product):
     hotel = models.ForeignKey(Hotel,
                     on_delete=models.CASCADE,
-                    related_name="hotel"
+                    related_name="hotel",
+                    null=True
     )
     vehicle = models.ForeignKey(Vehicle,
                     on_delete=models.CASCADE,
-                    related_name="vehicle"
+                    related_name="vehicle",
+                    null=True
     )
     flight = models.ForeignKey(Flight,
                     on_delete=models.CASCADE,
-                    related_name="flight"
+                    related_name="flight",
+                    null=True
     )
     price = models.FloatField(default=0.00)
     amount = models.IntegerField(default = 0,validators=[MinValueValidator(0), MaxValueValidator(99)])
     
 
     def __str__(self):
-        return (f"Package N {self.id}: {self.hotel} | {self.vehicle} | {self.flight.only_name()}")
+        return (f"Package N {self.id}: {self.hotel} | {self.vehicle} | {self.flight}")
 
     class Meta:
         verbose_name = 'Package'
@@ -194,7 +197,7 @@ class Purchase(models.Model):
     status = models.IntegerField(default=0,
                     choices=STATUS,
                     validators=[MinValueValidator(0), MaxValueValidator(2)])
-    user  = models.ForeignKey(LoginModel.User,
+    user  = models.ForeignKey(User,
                                  on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     
