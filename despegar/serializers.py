@@ -39,14 +39,18 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PackageSerializer(serializers.ModelSerializer):
+
+    amount = serializers.SerializerMethodField()
     hotel_name = serializers.ReadOnlyField(source='hotel.name')
     flight_name = serializers.ReadOnlyField(source='flight.name')
     vehicle_name = serializers.ReadOnlyField(source='vehicle.name')
 
     class Meta:
         model = Package
-        fields = ["id","product_status","hotel_name","flight_name","vehicle_name","price"]
+        fields = ["id","product_status","hotel_name","flight_name","vehicle_name","price","amount"]
 
+    def get_amount(self,instance):
+        return instance.currentAmount
 
 class PurchaseSerializer(serializers.ModelSerializer):
     

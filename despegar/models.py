@@ -179,6 +179,12 @@ class Package(Product):
     price = models.FloatField(default=0.00)
     amount = models.IntegerField(default = 0,validators=[MinValueValidator(0), MaxValueValidator(99)])
     
+    @property
+    def currentAmount(self):
+        amountInit = self.amount
+        amountSold = len(Purchase.objects.filter(package__id=self.id,status = 1))
+        totalAmount = amountInit - amountSold
+        return totalAmount
 
     def __str__(self):
         return (f"Package N {self.id}: {self.hotel} | {self.vehicle} | {self.flight}")
