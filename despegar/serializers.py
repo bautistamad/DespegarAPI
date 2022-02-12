@@ -5,25 +5,24 @@ from despegar.models import *
 from rest_framework import serializers
 
 class VehicleSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Vehicle
-        fields = '__all__'
+        fields = ["id","product_status","patent","brand","priceperday"]
 
 class HotelSerializer(serializers.ModelSerializer):
-     
     class Meta:
         model = Hotel
         fields = '__all__'
+        fields = ["name","product_status","hotel_type","stars","address","priceperday"]
 
 class FlightSerializer(serializers.ModelSerializer):
-    
+    flight_from_name = serializers.ReadOnlyField(source='airport_from.__str__')
+    flight_to_name = serializers.ReadOnlyField(source='airport_to.__str__')
     class Meta:
         model = Flight
-        fields = '__all__'
+        fields = ["code_number","product_status","flight_type","flight_from_name","flight_to_name","hours","date","turn","price"]
 
 class CountrySerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Country
         fields = '__all__'
@@ -35,13 +34,12 @@ class ProvinceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AirportSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Airport
         fields = '__all__'
 
 class PackageSerializer(serializers.ModelSerializer):
-
+    status_string = serializers.ReadOnlyField(source='product_status')
     hotel_name = serializers.ReadOnlyField(source='hotel.name')
     flight_name = serializers.ReadOnlyField(source='flight.name')
     vehicle_name = serializers.ReadOnlyField(source='vehicle.name')

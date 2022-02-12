@@ -9,10 +9,17 @@ from django.shortcuts import get_object_or_404
 
 class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
+    """
+    # Vehiculos SUPER MAMADA GALAXIAL XDDDDDDDDD
+
+    list:
+        Esta funcion hace un get
+    """
+
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     permission_classes = [ProductPermissions]
-
+    
     def get_queryset(self):
         """
         Si es superusuario devuelve todos los vehiculos,
@@ -315,7 +322,6 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Package.objects.all()
 
         country_name = self.request.query_params.get('country')
-        print(country_name)
         
         if country_name:
             return Package.objects.filter(flight__airport_to__province__country__name=country_name)
@@ -370,8 +376,21 @@ class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
         sino devuelve solo los disponibles 
         """
         user = self.request.user
-        return Purchase.objects.filter(status=0,user=user)
-        
+        purchases = Purchase.objects.filter(status=0,user=user);
+        return purchases
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        if queryset :
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response("You have no current / on going purchase", status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, *args, **kwargs):
         """

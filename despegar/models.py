@@ -202,7 +202,7 @@ class Purchase(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     
     def __str__(self):
-        return (f"{self.user.email}'s purchase ( {self.STATUS[self.status][1]} )")
+        return (f"{self.user}'s purchase ( {self.STATUS[self.status][1]} )")
 
     class Meta:
         verbose_name = 'Purchase'
