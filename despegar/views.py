@@ -10,10 +10,19 @@ from django.shortcuts import get_object_or_404
 class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
     """
-    Vehiculos SUPER MAMADA GALAXIAL XDDDDDDDDD
-
+    Vehiculos
     list:
-        Esta funcion hace un get
+        Permite listar los vehiculos
+    create:
+        Permite crear un vehiculo (es necesario ser superusuario)
+    read:
+        Permite listar un vehiculo en especifico
+    update:
+        Permite modificar completamente un vehiculo (no soportado)
+    partial_update:
+        Permite modificar parcialmente un vehiculo (no soportado)
+    delete:
+        Permite eliminar un vehiculo (es necesario ser superusuario)
     """
 
     queryset = Vehicle.objects.all()
@@ -62,6 +71,23 @@ class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove vehicle, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
+    
+    """
+    Hoteles
+    list:
+        Permite listar los hoteles
+    create:
+        Permite crear un hotel (es necesario ser superusuario)
+    read:
+        Permite listar un hotel en especifico
+    update:
+        Permite modificar completamente un hotel (no soportado)
+    partial_update:
+        Permite modificar parcialmente un hotel (no soportado)
+    delete:
+        Permite eliminar un hotel (es necesario ser superusuario)
+    """
+
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     permission_classes = [ProductPermissions]
@@ -114,6 +140,23 @@ class HotelsViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove hotel, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
+    
+    """
+    Vuelos
+    list:
+        Permite listar los vuelos
+    create:
+        Permite crear un vuelo (es necesario ser superusuario)
+    read:
+        Permite listar un vuelo en especifico
+    update:
+        Permite modificar completamente un vuelo (no soportado)
+    partial_update:
+        Permite modificar parcialmente un vuelo (no soportado)
+    delete:
+        Permite eliminar un vuelo (es necesario ser superusuario)
+    """
+    
     queryset = Flight.objects.all()
     serializer_class = FlightSerializer
     permission_classes = [ProductPermissions]
@@ -174,6 +217,22 @@ class FlightsViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove flight, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
+    """
+    Aeropuertos
+    list:
+        Permite listar los aeropuertos
+    create:
+        Permite crear un aeropuerto (es necesario ser superusuario)
+    read:
+        Permite listar un aeropuerto en especifico
+    update:
+        Permite modificar completamente un aeropuerto (no soportado)
+    partial_update:
+        Permite modificar parcialmente un aeropuerto (no soportado)
+    delete:
+        Permite eliminar un aeropuerto (es necesario ser superusuario)
+    """
+
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
     permission_classes = [ProductPermissions]
@@ -218,6 +277,23 @@ class AirportViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove airport, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
+    
+    """
+    provincias
+    list:
+        Permite listar los provincias
+    create:
+        Permite crear un provincia (es necesario ser superusuario)
+    read:
+        Permite listar un provincia en especifico
+    update:
+        Permite modificar completamente un provincia (no soportado)
+    partial_update:
+        Permite modificar parcialmente un provincia (no soportado)
+    delete:
+        Permite eliminar un provincia (es necesario ser superusuario)
+    """
+
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
     permission_classes = [ProductPermissions]
@@ -267,6 +343,23 @@ class ProvinceViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove province, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
+   
+    """
+    Paises
+    list:
+        Permite listar los paises
+    create:
+        Permite crear un pais (es necesario ser superusuario)
+    read:
+        Permite listar un pais en especifico
+    update:
+        Permite modificar completamente un pais (no soportado)
+    partial_update:
+        Permite modificar parcialmente un pais (no soportado)
+    delete:
+        Permite eliminar un pais (es necesario ser superusuario)
+    """
+
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     permission_classes = [ProductPermissions]
@@ -309,6 +402,23 @@ class CountryViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove country, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
+    
+    """
+    Paquetes
+    list:
+        Permite listar los paquetes
+    create:
+        Permite crear un paquete (es necesario ser superusuario)
+    read:
+        Permite listar un paquete en especifico
+    update:
+        Permite modificar completamente un paquete (no soportado)
+    partial_update:
+        Permite modificar parcialmente un paquete (no soportado)
+    delete:
+        Permite eliminar un paquete (es necesario ser superusuario)
+    """
+    
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     permission_classes = [ProductPermissions]
@@ -366,6 +476,23 @@ class PackageViewSet(viewsets.ModelViewSet, ProductPermissions):
             return Response("Can not remove package, contact an administrator", status=status.HTTP_400_BAD_REQUEST)
 
 class PurchaseViewSet(viewsets.ModelViewSet, PackagePermissions):
+    
+    """
+    Compras
+    list:
+        Permite listar las compras
+    create:
+        Permite crear una compra (es necesario ser superusuario)
+    read:
+        Permite listar una compra en especifico
+    update:
+        Permite modificar completamente una compra (no soportado)
+    partial_update:
+        Permite modificar parcialmente una compra (no soportado)
+    delete:
+        Permite eliminar una compra (es necesario ser superusuario)
+    """
+    
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
     permission_classes = [PackagePermissions]

@@ -18,3 +18,13 @@ router.register("purchases", PurchaseViewSet, basename="purchases")
 
 urlpatterns = router.urls
 
+# urlpatterns = [
+#     path('vehicles/', VehiclesViewSet.as_view({'get': 'list'}), name="vehicles"),
+#     path('hotels/', HotelsViewSet.as_view({'get': 'list'}), name="hotels"),
+#     path('flights/', FlightsViewSet.as_view({'get': 'list'}), name="flights"),
+#     path('airports/', AirportViewSet.as_view({'get': 'list'}), name="airports"),
+#     path('provinces/', ProvinceViewSet.as_view({'get': 'list'}), name="provinces"),
+#     path('countries/', CountryViewSet.as_view({'get': 'list'}), name="countries"),
+#     path('packages/', PackageViewSet.as_view({'get': 'list'}), name="packages"),
+#     path('purchases/', PurchaseViewSet.as_view({'get': 'list'}), name="purchases")
+# ]
