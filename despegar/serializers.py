@@ -39,7 +39,6 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PackageSerializer(serializers.ModelSerializer):
-    status_string = serializers.ReadOnlyField(source='product_status')
     hotel_name = serializers.ReadOnlyField(source='hotel.name')
     flight_name = serializers.ReadOnlyField(source='flight.name')
     vehicle_name = serializers.ReadOnlyField(source='vehicle.name')

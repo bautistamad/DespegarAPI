@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 class VehiclesViewSet(viewsets.ModelViewSet, ProductPermissions):
 
     """
-    # Vehiculos SUPER MAMADA GALAXIAL XDDDDDDDDD
+    Vehiculos SUPER MAMADA GALAXIAL XDDDDDDDDD
 
     list:
         Esta funcion hace un get

@@ -8,7 +8,6 @@ from rest_framework.permissions import AllowAny
 class RegisterView(generics.CreateAPIView):
     """
     # Request utilizado para registrar un usuario normal
-    
     """
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
